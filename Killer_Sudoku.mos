@@ -1,0 +1,65 @@
+model Question04
+!references 
+!mosel language structure http://www.maths.ed.ac.uk/hall/Xpress/FICO_Docs/mosel/mosel_ug/dhtml/moselugapplang.html
+!https://en.wikipedia.org/wiki/Killer_sudoku
+!//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+!!!!!!!!!!!!!!!compiler directives!!!!!!!!!!!!!!!!!!
+uses "mmxprs"; !import Xpress-optimizer solver 
+!!!!!!!!!!!!!!!Declarations!!!!!!!!!!!!!!!!!!!!!!!!!
+
+declarations
+row = 1..6 !6 rows
+col = 1..6 !6 columns
+N = 1..6 !the numbers 1-6
+!array consists of rows columns and the numbers 1-6 
+KS:array(row,col,N) of mpvar 
+
+Obj:linctr 
+end-declarations
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!Constraint 1 == finds out if integers from N are in either row or col, 
+forall(x in row, y in col, z in N) KS(x,y,z) is_binary
+
+!constraint 2 check if cell contains a single integer
+forall(x in row, y in col) sum(z in N) KS(x,y,z)=1
+
+!constraint 3 check if number N  once in the row
+forall(x in row,z in N) sum(y in col) KS(x,y,z)=1
+
+!constraint 4 check if number N appears once in the column
+forall(y in col, z in N) sum(x in row) KS(x,y,z)=1
+
+!constraing 5 define cages
+sum(z in N) z*KS(1,1,z) + sum(z in N) z*KS(1,2,z)=7
+sum(z in N) z*KS(1,3,z) + sum(z in N) z*KS(2,3,z)=5
+sum(z in N) z*KS(1,4,z) + sum(z in N) z*KS(1,5,z)=7
+sum(z in N) z*KS(1,6,z) + sum(z in N) z*KS(2,6,z)=7
+sum(z in N) z*KS(2,1,z) + sum(z in N) z*KS(2,2,z)=9
+sum(z in N) z*KS(2,4,z) + sum(z in N) z*KS(3,4,z)=10
+sum(z in N) z*KS(2,5,z) + sum(z in N) z*KS(3,5,z)=3
+sum(z in N) z*KS(3,1,z) + sum(z in N) z*KS(4,1,z)=4
+sum(z in N) z*KS(3,2,z) + sum(z in N) z*KS(3,3,z)=11
+sum(z in N) z*KS(3,6,z) + sum(z in N) z*KS(4,6,z)=7
+sum(z in N) z*KS(5,1,z) + sum(z in N) z*KS(6,1,z)=7
+sum(z in N) z*KS(4,2,z) + sum(z in N) z*KS(4,3,z)=6
+sum(z in N) z*KS(4,4,z) + sum(z in N) z*KS(4,5,z)=8
+sum(z in N) z*KS(5,2,z) + sum(z in N) z*KS(5,3,z)=4
+sum(z in N) z*KS(6,2,z) + sum(z in N) z*KS(6,3,z)=10
+sum(z in N) z*KS(5,4,z) + sum(z in N) z*KS(6,4,z)=3
+sum(z in N) z*KS(5,5,z) + sum(z in N) z*KS(6,5,z)=11
+sum(z in N) z*KS(5,6,z) + sum(z in N) z*KS(6,6,z)=7
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!PRINT!!!!
+
+minimise(0)
+forall(x in row) do
+writeln("")
+forall(y in col,z in N) do
+if (getsol(KS(x,y,z))=1 ) then 
+write(" ",z)
+end-if
+end-do
+end-do
+end-model
