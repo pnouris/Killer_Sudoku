@@ -10,4 +10,4 @@ Use XPressMP to find a solution to the above Killer SuDoku problem. Try to prese
 
 ## Build With
 
-https://www.fico.com/en/products/fico-xpress-optimization
+[XPressMP](https://www.fico.com/en/products/fico-xpress-optimization) - Optimization Tool
